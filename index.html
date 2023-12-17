@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poohouse</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #playButton {
+            font-size: 50px;
+            padding: 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="audioPlayer" loop>
+        <source src="loop.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <button id="playButton">Play</button>
+
+    <script>
+        var audioPlayer = document.getElementById('audioPlayer');
+        var playButton = document.getElementById('playButton');
+
+        playButton.addEventListener('click', function(){
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playButton.textContent = 'Pause';
+            } else {
+                audioPlayer.pause();
+                playButton.textContent = 'Play';
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload</title>
+    <style>
+        body {
+            background-color: #333; /* Dark gray background */
+            color: #fff; /* White text color */
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+        }
+        input, button {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="slug" placeholder="Enter custom slug" required><br>
+            <input type="file" name="video" accept="video/*" required><br>
+            <button type="submit">Upload Video</button>
+        </form>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

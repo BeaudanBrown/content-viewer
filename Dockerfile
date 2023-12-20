@@ -1,19 +1,20 @@
-# Use the Nginx image from Docker Hub
-FROM nginx:alpine
+# Use the official Node.js 16 image as a parent image
+FROM node:16-alpine
 
-# Remove the default Nginx configuration file
-RUN rm /etc/nginx/conf.d/default.conf
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-# Copy a new configuration file from the current directory
-COPY nginx.conf /etc/nginx/conf.d
+# Copy package.json and package-lock.json (if available) into the container
+COPY package*.json ./
 
-# Copy the HTML and audio file to the web root
-COPY puss.mp4 /usr/share/nginx/html
+# Install project dependencies
+RUN npm install
 
-# Expose port 80
-EXPOSE 80
+# Copy the rest of your application's source code from your host to your container's working directory
+COPY . .
 
-COPY index.html /usr/share/nginx/html
+# Inform Docker that the container is listening on the specified port at runtime.
+EXPOSE 3000
 
-# Start Nginx when the container has provisioned
-CMD ["nginx", "-g", "daemon off;"]
+# Run the application
+CMD ["node", "server.js"]

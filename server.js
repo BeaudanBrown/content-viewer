@@ -16,42 +16,97 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: function(req, file, cb) {
-        // Use the slug as the filename, and append the original file extension
         const slug = req.body.slug;
         const ext = path.extname(file.originalname);
-        cb(null, slug + ext);
+        const fullPath = path.join('uploads/', slug + ext);
+
+        // Check if file already exists
+        fs.access(fullPath, fs.constants.F_OK, (err) => {
+            if (err) {
+                // File does not exist, can save with this name
+                cb(null, slug + ext);
+            } else {
+                // File exists, return an error
+                req.fileValidationError = 'File already exists';
+                cb(null, slug + ext);
+            }
+        });
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    fileFilter: function (req, file, cb) {
+        // Accept videos only
+        if (!file.originalname.match(/\.(mp4)$/)) {
+            req.fileValidationError = 'Only MP4 files are allowed!';
+            return cb(new Error('Only MP4 files are allowed!'), false);
+        }
+        cb(null, true);
+    }
+});
 
-// Handle video uploads on the POST /upload route
 app.post('/upload', upload.single('video'), (req, res) => {
-    // Check if the file and slug are present
     if (!req.file || !req.body.slug) {
-        // Better error handling should be implemented here
         return res.status(400).json({ success: false, message: 'No file or slug provided.' });
     }
-
-    // You might want to check if the slug already exists and handle accordingly
-
+    if (req.fileValidationError) {
+        return res.status(400).json({ success: false, message: req.fileValidationError });
+    }
     // Respond with success and the slug
     res.json({ success: true, slug: req.body.slug });
+
 });
 
 // Serve the video on the dynamic route base-url/<slug>
-app.get('/video/:slug', (req, res) => {
-    const slug = req.params.slug;
-    const filePath = path.join(__dirname, 'uploads', slug);
+app.get('/:slug', (req, res) => {
 
-    // Check if the file exists
-    if (fs.existsSync(filePath)) {
-        // Serve the video file
-        res.sendFile(filePath);
-    } else {
-        // Better error handling should be implemented here
-        res.status(404).send('Video not found.');
-    }
+    const slug = req.params.slug;
+    const uploadsDir = path.join(__dirname, 'uploads');
+
+    // Read the directory contents
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) {
+            // Handle error (e.g., directory not found)
+            res.status(500).send('Server error.');
+            return;
+        }
+
+        // Attempt to find a file that starts with the slug and has any extension
+        const videoFile = files.find(file => path.basename(file, path.extname(file)) === slug);
+
+        if (!!videoFile) {
+            res.sendFile(path.join(__dirname, 'public', 'view.html'));
+        } else {
+            // No matching video file found
+            res.status(404).send('Video not found.');
+        }
+    });
+});
+
+app.get('/get-video/:slug', (req, res) => {
+    const slug = req.params.slug;
+    const uploadsDir = path.join(__dirname, 'uploads');
+
+    // Read the directory contents
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) {
+            // Handle error (e.g., directory not found)
+            res.status(500).json({ error: 'Server error.' });
+            return;
+        }
+
+        // Attempt to find a file that starts with the slug
+        const videoFile = files.find(file => path.basename(file, path.extname(file)) === slug);
+
+        if (videoFile) {
+            // Return the path to the video file
+            res.json({ videoPath: `/uploads/${videoFile}` });
+        } else {
+            // No matching video file found
+            res.status(404).json({ error: 'Video not found.' });
+        }
+    });
 });
 
 // Start the server

@@ -15,16 +15,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 // Handle success, such as redirecting to the new video URL
-                window.location.href = `/video/${data.slug}`;
+                window.location.href = `/${data.slug}`;
             } else {
                 // Handle failure, such as displaying an error message
-                alert('Upload failed');
+                alert(data.message);
             }
         })
         .catch(error => {
             // Handle network errors
             console.error('Error:', error);
-            alert('An error occurred while uploading the video.');
+            alert(error);
         });
     });
 });

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PussDance</title>
+    <title>Content Viewer</title>
     <style>
         html, body {
             height: 100%;
@@ -24,21 +24,6 @@
             overflow: hidden;
             padding-top: 10px;
         }
-        .button-container {
-            height: 10vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #playButton {
-            font-size: 50px;
-            padding: 10px;
-            background-color: #444;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-        }
         video {
             max-width: 100%; /* Ensures video doesn't overflow its container */
             max-height: 100%; /* Ensures video doesn't overflow its container */
@@ -50,46 +35,14 @@
 <body>
     <div class="container">
         <div class="video-container">
-            <video id="videoPlayer" loop style="display:none;">
+            <video id="videoPlayer" loop controls style="display:none;">
                 <source id="videoSource" type="video/mp4">
                 Your browser does not support the video element.
             </video>
         </div>
-
-        <div class="button-container">
-            <button id="playButton">Play</button> <!-- Moved up -->
-        </div>
     </div>
 
-    <script>
-        var videoPlayer = document.getElementById('videoPlayer');
-        var playButton = document.getElementById('playButton');
-        var videoSource = document.getElementById('videoSource');
-
-        // Set the video source dynamically. The slug should be provided by the server.
-        // For example, if the server sets a variable `videoSlug` in the template:
-        videoSource.src = '/uploads/' + videoSlug;
-
-        playButton.addEventListener('click', function(){
-            if (videoPlayer.paused) {
-                videoPlayer.play();
-                playButton.textContent = 'Pause';
-                videoPlayer.style.display = 'block';
-            } else {
-                videoPlayer.pause();
-                playButton.textContent = 'Play';
-                videoPlayer.style.display = 'none';
-            }
-        });
-
-        // When the page loads, automatically play the video
-        window.onload = function() {
-            videoPlayer.style.display = 'block';
-            videoPlayer.play();
-            playButton.textContent = 'Pause';
-        };
-    </script>
-
+    <script src="view.js"></script>
 </body>
 </html>
 

@@ -38,8 +38,8 @@ const upload = multer({
     storage: storage,
     fileFilter: function (req, file, cb) {
         // Accept videos only
-        if (!file.originalname.match(/\.(mp4)$/)) {
-            req.fileValidationError = 'Only MP4 files are allowed!';
+        if (!file.originalname.match(/\.(mp4|jpg|jpeg|mp3)$/i)) {
+            req.fileValidationError = 'Only MP4, JPEG, JPG and MP3 files are allowed!';
             return cb(new Error('Only MP4 files are allowed!'), false);
         }
         cb(null, true);
@@ -73,9 +73,9 @@ app.get('/:slug', (req, res) => {
         }
 
         // Attempt to find a file that starts with the slug and has any extension
-        const videoFile = files.find(file => path.basename(file, path.extname(file)) === slug);
+        const file = files.find(file => path.basename(file, path.extname(file)) === slug);
 
-        if (!!videoFile) {
+        if (!!file) {
             res.sendFile(path.join(__dirname, 'public', 'view.html'));
         } else {
             // No matching video file found
@@ -116,13 +116,13 @@ app.get('/get-video/:slug', (req, res) => {
         }
 
         // Attempt to find a file that starts with the slug
-        const videoFile = files.find(file => path.basename(file, path.extname(file)) === slug);
+        const contentFile = files.find(file => path.basename(file, path.extname(file)) === slug);
 
-        if (videoFile) {
-            // Return the path to the video file
-            res.json({ videoPath: `/uploads/${videoFile}` });
+        if (!!contentFile) {
+            // Return the path to the content file
+            res.json({ videoPath: `/uploads/${contentFile}` });
         } else {
-            // No matching video file found
+            // No matching content file found
             res.status(404).json({ error: 'Video not found.' });
         }
     });

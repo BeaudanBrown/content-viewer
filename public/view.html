@@ -16,7 +16,7 @@
             height: 100%;
             overflow: hidden;
         }
-        .video-container {
+        .media-container {
             display: flex;
             flex: 1;
             justify-content: center;
@@ -34,11 +34,23 @@
 </head>
 <body>
     <div class="container">
-        <div class="video-container">
+        <div class="media-container">
+            <!-- Video player -->
             <video id="videoPlayer" loop controls style="display:none;">
                 <source id="videoSource" type="video/mp4">
-                Your browser does not support the video element.
             </video>
+            <!-- Image display -->
+            <img id="imageDisplay" src="" alt="Image" style="display:none; max-width:100%;">
+            <!-- Audio player -->
+            <audio id="audioPlayer" controls style="display:none;">
+                <source id="audioSource" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+
+            <!-- <video id="videoPlayer" loop controls style="display:none;"> -->
+            <!--     <source id="videoSource" type="video/mp4"> -->
+            <!--     Your browser does not support the video element. -->
+            <!-- </video> -->
         </div>
     </div>
 

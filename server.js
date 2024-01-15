@@ -84,6 +84,25 @@ app.get('/:slug', (req, res) => {
     });
 });
 
+app.get('/check-video/:slug', (req, res) => {
+    const slug = req.params.slug;
+    const uploadsDir = path.join(__dirname, 'uploads');
+
+    // Read the directory contents
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) {
+            // Handle error (e.g., directory not found)
+            res.status(500).json({ error: 'Server error.' });
+            return;
+        }
+
+        // Attempt to find a file that starts with the slug
+        const contentFile = files.find(file => path.basename(file, path.extname(file)) === slug);
+
+        res.json({ slugUsed: !!contentFile });
+    });
+});
+
 app.get('/get-video/:slug', (req, res) => {
     const slug = req.params.slug;
     const uploadsDir = path.join(__dirname, 'uploads');
